@@ -1,0 +1,43 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Coded by: ERIC
+'Project Start Date: 5/11/2011
+V.Local.fCost.Declare(Float)
+V.Local.fPct.Declare(Float)
+V.Local.fRet.Declare(Float)
+V.Local.sSQL.Declare(String)
+
+'F.Intrinsic.Debug.InvokeDebugger
+'F.Intrinsic.Debug.Stop
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+V.Local.sSQL.Set("Select * From ATG_3442_PO_MARK")
+F.ODBC.Connection!con.OpenRecordsetRO("rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.con!rst.EOF,=,False)
+	F.Intrinsic.Math.Div(V.ODBC.con!rst.FieldValTrim!Percent,100,V.Local.fPct)
+	F.Intrinsic.Math.Mult(V.Local.fPct,V.Passed.000133,V.Local.fRet)
+	F.Intrinsic.Math.Add(V.Local.fRet,V.Passed.000133,V.Local.fRet)
+	F.Intrinsic.String.Concat("Select * From INVENTORY_MSTR Where Part = '",V.Passed.000071,"'",V.Local.sSQL)
+	F.ODBC.Connection!con.OpenRecordsetRW("rstINV",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.con!rstINV.EOF,=,False)
+		F.ODBC.con!rstINV.Set!AMT_PRICE(V.Local.fRet)
+		F.ODBC.con!rstINV.Update
+	F.Intrinsic.Control.Else
+		F.Intrinsic.UI.Msgbox("No part found.","Inventory Error")
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rstINV.Close
+F.Intrinsic.Control.Else
+	F.Intrinsic.UI.Msgbox("No pecentange value found in table.","Enter a percentage value")
+F.Intrinsic.Control.EndIf
+F.ODBC.con!rst.Close
+F.ODBC.Connection!con.Close
+F.Intrinsic.Control.End
+
+Program.Sub.Main.End
+
+
