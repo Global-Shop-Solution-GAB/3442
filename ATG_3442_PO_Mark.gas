@@ -1,0 +1,77 @@
+Program.Sub.ScreenSU.Start
+gui.F_Percent..create
+gui.F_Percent..caption("Markup Percentage")
+gui.F_Percent..size(3870,1845)
+gui.F_Percent..position(0,0)
+gui.F_Percent..event(unload,Exit)
+gui.F_Percent..alwaysontop(False)
+gui.F_Percent..fontname("Arial")
+gui.F_Percent..fontsize(8)
+gui.F_Percent..forecolor(0)
+gui.F_Percent..fontstyle(,,,,)
+gui.F_Percent..BackColor(-2147483633)
+gui.F_Percent..controlbox(True)
+gui.F_Percent..maxbutton(True)
+gui.F_Percent..minbutton(True)
+gui.F_Percent..mousepointer(0)
+gui.F_Percent..moveable(True)
+gui.F_Percent..sizeable(True)
+gui.F_Percent..ShowInTaskBar(True)
+gui.F_Percent..titlebar(True)
+gui.F_Percent.lblPercent.create(label,"Enter %",True,1935,255,1,200,100,True,0,Arial,8,-2147483633,0)
+gui.F_Percent.txt1.create(textbox,"",True,3045,375,0,185,325,True,0,Arial,8,-2147483643,1)
+gui.F_Percent.txt1.numericonly(1)
+gui.F_Percent.cmdSave.create(button)
+gui.F_Percent.cmdSave.caption("Save")
+gui.F_Percent.cmdSave.visible(True)
+gui.F_Percent.cmdSave.size(855,375)
+gui.F_Percent.cmdSave.zorder(0)
+gui.F_Percent.cmdSave.position(200,800)
+gui.F_Percent.cmdSave.enabled(True)
+gui.F_Percent.cmdSave.fontname("Arial")
+gui.F_Percent.cmdSave.fontsize(8)
+gui.F_Percent.cmdSave.event(click,Save)
+
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+
+Program.Sub.Main.Start
+'Coded by: ERIC
+'Project Start Date: 5/11/2011
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+Gui.F_Percent..Show
+'clayton cook'ewo
+
+Program.Sub.Main.End
+
+
+Program.Sub.Exit.Start
+F.ODBC.Connection!con.Close
+F.Intrinsic.Control.End
+
+Program.Sub.Exit.End
+
+
+Program.Sub.Save.Start
+V.Local.sSQL.Declare(String)
+
+V.Local.sSQL.Set("Select * From ATG_3442_PO_MARK")
+F.ODBC.Connection!con.OpenRecordsetRW("rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.con!rst.EOF,=,True)
+	F.ODBC.con!rst.AddNew
+F.Intrinsic.Control.EndIf
+F.ODBC.con!rst.Set!Percent(V.Screen.F_Percent!txt1.Text)
+F.ODBC.con!rst.Update
+F.ODBC.con!rst.Close
+
+
+Program.Sub.Save.End
+
+
+
